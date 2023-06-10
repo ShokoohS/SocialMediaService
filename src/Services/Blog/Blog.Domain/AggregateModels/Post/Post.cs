@@ -9,8 +9,15 @@ namespace Blog.Domain.AggregateModels.Post
 
         public Post(string name, string content, string imageUrl)
         {
-            Name = name;
+            Name = string.IsNullOrWhiteSpace(name) ? throw new BlogDomainException("Name can not be null") : name;
             Content = content;
+            var regex = @"(https?:\/\/.*\.(?:png|jpg))";
+            var match = Regex.Match(imageUrl, regex, RegexOptions.IgnoreCase);
+
+            if (!match.Success && !string.IsNullOrEmpty(imageUrl))
+            {
+                throw new BlogDomainException("Name can not be null");
+            }
             ImageURL = imageUrl;
         }
     }

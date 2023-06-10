@@ -3,85 +3,80 @@
 public abstract class Entity
 {
     int? _requestedHashCode;
-    int _Id;
-    public virtual int Id
+
+    public Guid Id { get; protected set; }
+    public DateTimeOffset CreatedAt { get; private set; }
+    public Guid CreatedBy { get; private set; }
+    public DateTimeOffset ModifiedAt { get; private set; }
+    public Guid UpdatedBy { get; private set; }
+    public int Version { get; set; }
+
+    private List<INotification> _domainEvents;
+    public IReadOnlyCollection<INotification> DomainEvents => _domainEvents?.AsReadOnly();
+
+    public void AddDomainEvent(INotification eventItem)
     {
-        get
-        {
-            return _Id;
-        }
-        protected set
-        {
-            _Id = value;
-        }
+        _domainEvents = _domainEvents ?? new List<INotification>();
+        _domainEvents.Add(eventItem);
     }
 
-    //private List<INotification> _domainEvents;
-    //public IReadOnlyCollection<INotification> DomainEvents => _domainEvents?.AsReadOnly();
+    public void RemoveDomainEvent(INotification eventItem)
+    {
+        _domainEvents?.Remove(eventItem);
+    }
 
-    //public void AddDomainEvent(INotification eventItem)
-    //{
-    //    _domainEvents = _domainEvents ?? new List<INotification>();
-    //    _domainEvents.Add(eventItem);
-    //}
+    public void ClearDomainEvents()
+    {
+        _domainEvents?.Clear();
+    }
 
-    //public void RemoveDomainEvent(INotification eventItem)
-    //{
-    //    _domainEvents?.Remove(eventItem);
-    //}
+    public bool IsTransient()
+    {
+        return Id == Guid.Empty;
+    }
 
-    //public void ClearDomainEvents()
-    //{
-    //    _domainEvents?.Clear();
-    //}
+    public override bool Equals(object obj)
+    {
+        if (obj == null || !(obj is Entity))
+            return false;
 
-    //public bool IsTransient()
-    //{
-    //    return this.Id == default(Int32);
-    //}
+        if (object.ReferenceEquals(this, obj))
+            return true;
 
-    //public override bool Equals(object obj)
-    //{
-    //    if (obj == null || !(obj is Entity))
-    //        return false;
+        if (this.GetType() != obj.GetType())
+            return false;
 
-    //    if (Object.ReferenceEquals(this, obj))
-    //        return true;
+        var item = (Entity)obj;
 
-    //    if (this.GetType() != obj.GetType())
-    //        return false;
+        if (item.IsTransient() || this.IsTransient())
+            return false;
+        else
+            return item.Id == Id;
+    }
 
-    //    Entity item = (Entity)obj;
+    public override int GetHashCode()
+    {
+        if (!IsTransient())
+        {
+            if (!_requestedHashCode.HasValue)
+                _requestedHashCode = this.Id.GetHashCode() ^ 31;
 
-    //    if (item.IsTransient() || this.IsTransient())
-    //        return false;
-    //    else
-    //        return item.Id == this.Id;
-    //}
+            return _requestedHashCode.Value;
+        }
+        else
+            return base.GetHashCode();
 
-    //public override int GetHashCode()
-    //{
-    //    if (!IsTransient())
-    //    {
-    //        if (!_requestedHashCode.HasValue)
-    //            _requestedHashCode = this.Id.GetHashCode() ^ 31; // XOR for random distribution (http://blogs.msdn.com/b/ericlippert/archive/2011/02/28/guidelines-and-rules-for-gethashcode.aspx)
+    }
+    public static bool operator ==(Entity left, Entity right)
+    {
+        if (object.Equals(left, null))
+            return (object.Equals(right, null)) ? true : false;
+        else
+            return left.Equals(right);
+    }
 
-    //        return _requestedHashCode.Value;
-    //    }
-    //    else
-    //        return base.GetHashCode();
-
-    //}
-    //public static bool operator ==(Entity left, Entity right)
-    //{
-    //    if (Object.Equals(left, null))
-    //        return (Object.Equals(right, null)) ? true : false;
-    //    else
-    //        return left.Equals(right);
-    //}
-
-    //public static bool operator !=(Entity left, Entity right)
-    //{
-    //    return !(left == right);
-    //}
+    public static bool operator !=(Entity left, Entity right)
+    {
+        return !(left == right);
+    }
 }
