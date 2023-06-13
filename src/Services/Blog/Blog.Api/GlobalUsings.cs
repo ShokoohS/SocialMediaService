@@ -28,5 +28,7 @@ global using System.Threading.Tasks;
 global using System.Threading;
 global using System;
 global using Blog.Api.Application.Commands;
+global using Blog.Api.Infrastructure;
 global using Blog.Domain.AggregateModels.Post;
+global using Blog.Infrastructure.ConfigurationExtensions;
 global using MediatR;

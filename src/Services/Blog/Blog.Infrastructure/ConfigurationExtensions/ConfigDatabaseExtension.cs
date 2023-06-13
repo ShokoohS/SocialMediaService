@@ -2,7 +2,7 @@
 
 public static class ConfigDatabaseExtension
 {
-    public static IServiceCollection AddRecruitDbContext(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddBlogDbContext(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<BlogDbContext>(options =>
             {

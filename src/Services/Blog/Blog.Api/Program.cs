@@ -1,15 +1,21 @@
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
+
+
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
+builder.Services.RegisterInfrastructureServices();
 
-// Configure the HTTP request pipeline.
+builder.Services.AddBlogDbContext(builder.Configuration);
+builder.Services.AddCrossOrigin();
+
+var app = builder.Build();
+app.AddMigrationAndSeed().Wait();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

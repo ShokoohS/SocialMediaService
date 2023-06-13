@@ -1,8 +1,8 @@
 ﻿namespace Blog.Infrastructure.ConfigurationExtensions;
 
-public static class TodayRecruitContextSeedExtension
+public static class BlogMigrationAndSeed
 {
-    public static async Task TodayRecruitMigrateAndSeed(this IHost app)
+    public static async Task AddMigrationAndSeed(this IHost app)
     {
 
         using var scope = app.Services.CreateScope();

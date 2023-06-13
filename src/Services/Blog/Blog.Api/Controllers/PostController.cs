@@ -10,7 +10,7 @@ public class PostController : ControllerBase
     {
         _mediator = mediator;
     }
-    [HttpGet]
+    [HttpPost]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     public async Task<IActionResult> AddJobOpportunity([FromBody] AddPostCommand command)
