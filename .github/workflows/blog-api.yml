@@ -1,12 +1,12 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions  
+name: blog-api
+run-name: ${{ github.actor }} has merged into Develop branch  
 on: 
   workflow_dispatch:
   push:
     branches:
     - develop
 jobs:
-  Explore-GitHub-Actions:
+  Build-Blog-Api:
     runs-on: ubuntu-latest
     steps:
       - run: echo " The job was automatically triggered by a ${{ github.event_name }} event."
