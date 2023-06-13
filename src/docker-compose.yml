@@ -1,8 +1,12 @@
 version: '3.4'
 
 services:
-  blog.api:
+  blog-api:
     image: ${DOCKER_REGISTRY-}blogapi
     build:
       context: .
       dockerfile: Services/Blog/Blog.Api/Dockerfile
+
+  sql-db:
+    image: postgres
+    container_name: sql-db
